@@ -62,8 +62,8 @@ end
         end
         
         % assign maze start and end at random
-        mazeStartRow = round(rand(1)*mazeSize/2)+1;
-        mazeStartCol = round(rand(1)*mazeSize/2)+1;
+        mazeStartRow = round(rand(1)*(mazeSize/2-1))+1;
+        mazeStartCol = round(rand(1)*(mazeSize/2-1))+1;
         maze(mazeStartRow,mazeStartCol) = maze(mazeStartRow,mazeStartCol) + 2;
         
         mazeEndCol = round(rand(1)*mazeSize/2 + mazeSize/2);
@@ -84,22 +84,17 @@ end
             
             % parse tile code into an array for human readability
             tileCode = maze(position(1),position(2));
-            tileArray(4)=0;
-                tileCode
-            for m=1:4 % m from 1 to 4, powers of 2 from 5 down to 2
-                tileArray(m) = floor(tileCode / 2^(5-(m-1)));
-                tileCode = mod(tileCode,2^(5-(m-1)));
-            end
-                tileArray
+            tileFull = mazeTileFromNumber(tileCode);
+            tileArray = tileFull(1:4)
             
             if ((position ~= mazeStart) & ...
-                    (tileArray(mod(find(facing == 1)+2,4)+1) == 1))
+                    (tileArray(mod(find(facing == 1)+1,4)+1) == 1))
                 % back is not clear = made an invalid move!
                 display('Debugging output:')
                 facing
-                tileCode
+                tileArray
+                maze
                 position
-                mazeStart
                 error('Moved through an unduplicated wall!')
             end
             

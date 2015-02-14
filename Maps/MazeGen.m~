@@ -1,13 +1,24 @@
 function MazeGen
 clear
 validMazes = 0;
+invalidMazes = 0;
 mazeSize = 8;
 
-while validMazes < 1
-    maze = Generate;
+while ((validMazes) < 1 & (invalidMazes < 100))
+    [maze,isValid] = Generate;
+    if (isValid) 
+        disp('Valid maze found:')
+        maze
+        pause(1)
+        validMazes = validMazes + 1;
+    else
+        invalidMazes = invalidMazes + 1;
+        disp(sprintf('Invalid maze number %g found:',invalidMazes))
+        maze
+    end
 end
 
-    function maze = Generate
+    function [maze, isValid] = Generate
         rng('shuffle');
         
         maze(mazeSize,mazeSize)=0;
@@ -51,15 +62,13 @@ end
         end
         
         % assign maze start and end at random
-        mazeStartRow = round(rand(1)*mazeSize/2)+1;
-        mazeStartCol = round(rand(1)*mazeSize/2)+1;
+        mazeStartRow = round(rand(1)*(mazeSize/2-1))+1;
+        mazeStartCol = round(rand(1)*(mazeSize/2-1))+1;
         maze(mazeStartRow,mazeStartCol) = maze(mazeStartRow,mazeStartCol) + 2;
         
         mazeEndCol = round(rand(1)*mazeSize/2 + mazeSize/2);
         mazeEndRow = round(rand(1)*mazeSize/2 + mazeSize/2);
         maze(mazeEndRow,mazeEndCol) = maze(mazeEndRow,mazeEndCol) + 1;
-        
-        maze
         
         isValid = isValidMaze (maze,[mazeStartRow,mazeStartCol],...
             [mazeEndRow,mazeEndCol])
@@ -75,22 +84,15 @@ end
             
             % parse tile code into an array for human readability
             tileCode = maze(position(1),position(2));
-            tileArray(4)=0;
-                tileCode
-            for m=1:4 % m from 1 to 4, powers of 2 from 5 down to 2
-                tileArray(m) = floor(tileCode / 2^(5-(m-1)));
-                tileCode = mod(tileCode,2^(5-(m-1)));
-            end
-                tileArray
+            tileArray = mazeTileFromNumber(tileCode);
             
             if ((position ~= mazeStart) & ...
-                    (tileArray(mod(find(facing == 1)+2,4)+1) == 1))
+                    (tileArray(mod(find(facing == 1)+1,4)+1) == 1))
                 % back is not clear = made an invalid move!
                 display('Debugging output:')
                 facing
-                tileCode
-                position
-                mazeStart
+                tileArray
+                mazeTileFromNumber(maze(
                 error('Moved through an unduplicated wall!')
             end
             
