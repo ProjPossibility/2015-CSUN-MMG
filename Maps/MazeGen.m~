@@ -1,24 +1,13 @@
 function MazeGen
 clear
 validMazes = 0;
-invalidMazes = 0;
 mazeSize = 8;
 
-while ((validMazes) < 1 & (invalidMazes < 100))
-    [maze,isValid] = Generate;
-    if (isValid) 
-        disp('Valid maze found:')
-        maze
-        pause(1)
-        validMazes = validMazes + 1;
-    else
-        invalidMazes = invalidMazes + 1;
-        disp(sprintf('Invalid maze number %g found:',invalidMazes))
-        maze
-    end
+while validMazes < 1
+    maze = Generate;
 end
 
-    function [maze, isValid] = Generate
+    function maze = Generate
         rng('shuffle');
         
         maze(mazeSize,mazeSize)=0;
@@ -69,6 +58,8 @@ end
         mazeEndCol = round(rand(1)*mazeSize/2 + mazeSize/2);
         mazeEndRow = round(rand(1)*mazeSize/2 + mazeSize/2);
         maze(mazeEndRow,mazeEndCol) = maze(mazeEndRow,mazeEndCol) + 1;
+        
+        maze
         
         isValid = isValidMaze (maze,[mazeStartRow,mazeStartCol],...
             [mazeEndRow,mazeEndCol])
