@@ -17,7 +17,7 @@ import android.view.View;
  *
  * @see SystemUiHider
  */
-public class MainGame extends Activity {
+public class ConnectionPage extends Activity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -50,10 +50,10 @@ public class MainGame extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.main_menu);
+        setContentView(R.layout.connection_menu);
 
-        final View controlsView = findViewById(R.id.fullscreen_content_controls);
-        final View contentView = findViewById(R.id.main_layout);
+        final View controlsView = findViewById(R.id.fullscreen_connection_controls);
+        final View contentView = findViewById(R.id.connection_layout);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
@@ -106,14 +106,6 @@ public class MainGame extends Activity {
                 } else {
                     mSystemUiHider.show();
                 }
-            }
-        });
-
-        findViewById(R.id.btn_exit).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                finish();
-                return true;
             }
         });
     }

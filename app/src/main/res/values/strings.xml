@@ -2,5 +2,15 @@
 <resources>
 
     <string name="app_name">Peripheral Maze</string>
+    <string name="title_activity_connection_page">Connection Page</string>
+    <string name="back_symbol">back</string>
+    <string name="connection_page_title">Local Players</string>
+    <string name="connection_page_description">Select local player to challenge</string>
+    <string name="title_activity_mode_selector">Mode Selector Activity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="mode_selector_audio_desc">Swipe up on the screen for audio-based gaming</string>
+    <string name="mode_selector_visual_desc">Swipe up on the screen for visual-based gaming</string>
+    <string name="mode_selector_default_desc">Swipe either left or right for the default game mode</string>
 
 </resources>

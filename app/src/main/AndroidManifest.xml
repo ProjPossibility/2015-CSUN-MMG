@@ -12,6 +12,18 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
+        </activity>
+        <activity
+            android:name=".ConnectionPage"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_connection_page"
+            android:theme="@style/FullscreenTheme" >
+        </activity>
+        <activity
+            android:name=".ModeSelectorActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_mode_selector"
+            android:theme="@style/FullscreenTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
