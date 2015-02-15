@@ -11,4 +11,9 @@
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/map_sprite"
+        android:layout_gravity="center" />
 </FrameLayout>

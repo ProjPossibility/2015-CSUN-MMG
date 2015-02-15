@@ -2,18 +2,21 @@ package com.ss12.csun_mmg.peripheralmaze;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 
 public class Boards extends ActionBarActivity {
     Maze [] boards;
-    int numBoards = -1;
-    int numRows = -1;
-    int numCols = -1;
+    int numBoards = R.integer.numBoards;
+    int numRows = R.integer.numRows;
+    int numCols = R.integer.numCols;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {// like main
@@ -29,88 +32,48 @@ public class Boards extends ActionBarActivity {
         // Pull resources - needs to be in an activity.
         Resources res = getResources();
 
-        TypedArray boardInfo = res.obtainTypedArray(R.array.boardInfo);
-        String boardInfoStrings[];
-        for (int i = 0; i < 3; i++) {
-            boardInfoStrings = boardInfo.getString(i).split("=");
-            if (boardInfoStrings[0].equals("numRows")) {
-                numRows = Integer.valueOf(boardInfoStrings[1]);
-            } else if (boardInfoStrings[0].equals("numCols")) {
-                numCols = Integer.valueOf(boardInfoStrings[1]);
-            } else { // numBoards
-                numBoards = Integer.valueOf(boardInfoStrings[1]);
-            }
-        }
-
         Log.v("MazeParseDebug", "numBoards = " + String.valueOf(numBoards));
         Log.v("MazeParseDebug", "numRows = " + String.valueOf(numRows));
         Log.v("MazeParseDebug", "numCols = " + String.valueOf(numCols));
 
         boards = new Maze [numBoards];
+        int numGoodBoards=0;
         TypedArray boardData = res.obtainTypedArray(R.array.boardData);
-        String [] boardItemStrings;
 
-        for (int m = 0; m < 1; m++) {
+        for (int i=0; i<boardData.length(); i++) {
+            try {
+                JSONObject boardObj = new JSONObject(boardData.getString(i));
+                Maze newMaze = new Maze(numRows,numCols);
+                int numGoodTiles=0;
 
-            // Make new board
-            boards[m] = new Maze(numRows,numCols);
-
-            boardItemStrings = boardData.getString(m).split(",");
-            for (int i=0; i < boardItemStrings.length; i++) {
-                boardItemStrings[i] = boardItemStrings[i].replaceAll("[{}\\Q[]\\E]", "");
-                Log.v("MazeParseDebug", "item [" + String.valueOf(i) + "] = " + boardItemStrings[i]);
-
-                String[] itemData;
-
-                // first item is of the form "ID:11"; all subsequent ones are of the form
-                // "00:1 1 1 1 1 0"
-                /*if (i == 0) {
-                    itemData = boardItemStrings[i].split(":");
-                    Maze[]
-                } else {
-
-                }*/
-            }
-
-            /*
-            board = new Tile[boardRows][boardCols];
-
-            // Iterate over XML data
-            for (int i = 0; i < boardRows; i++) {
-
-
-                // split into "30:1 1 1 1 1 0" - (row, col) and then tile code
-                String[] mazeTilePairs = mazeRow.split(",");
-                //Log.v("MazeParseDebug", mazeTilePairs[0]);
-                for (int j = 0; j < mazeTilePairs.length; j++) {
-                    // split into "01" and "0 1 0 0 1 0" - (row, col) and then tile code
-                    String[] mazeTile = mazeTilePairs[j].split(":");
-
-                    // assign row and column
-                    int row = Character.getNumericValue(mazeTile[0].charAt(0));
-                    int col = Character.getNumericValue(mazeTile[0].charAt(1));
-                    //Log.v("MazeParseDebug:", Integer.toString(row));
-                    //Log.v("MazeParseDebug:", Integer.toString(col));
-                    // TODO: since not using it, it would be OK to remove the ID number of the tile from data file generator script
-
-                    //Log.v("MazeParseDebug:", mazeTile[1]);
-                    int[] walls = new int[4];
-                    for (int k = 0; k < 4; k++) {
-                        walls[k] = Character.getNumericValue(mazeTile[1].charAt(2 * k));
+                // iterate over each row x col index combo and get that property value
+                for (int row=0; row<numRows; row++) {
+                    for (int col=0; col<numCols; col++) {
+                        JSONArray data = boardObj.getJSONArray(String.format("%d%d",row,col));
+                        if (data != null && data.length() == numCols) {
+                            newMaze.setTile(
+                                    row, col,
+                                    new Tile(
+                                        new int[]{data.getInt(0)},
+                                        data.getInt(6) == 1,
+                                        data.getInt(7) == 1
+                                    )
+                            );
+                            numGoodTiles++;
+                        }
                     }
-                    boolean isStart = (Character.getNumericValue(mazeTile[1].charAt(8)) == 1);
-                    boolean isEnd = (Character.getNumericValue(mazeTile[1].charAt(10)) == 1);
-
-                    maze[row][col] = new Tile(walls, isStart, isEnd);
-
-                    //Log.v("MazeParseDebug", "Tile walls: [" + Integer.toString(walls[0])+ " " + Integer.toString(walls[1]) + " " + Integer.toString(walls[2]) + " " + Integer.toString(walls[3]) + "]");
-                    //Log.v("MazeParseDebug", "isStart: " + String.valueOf(isStart));
-                    //Log.v("MazeParseDebug", "isEnd: " + String.valueOf(isEnd));
-
                 }
-            }
-            */
-        }
+
+                // if all tiles were clean, add this maze
+                if (numGoodTiles == numRows * numCols) {
+                    boards[i] = newMaze;
+                    numGoodBoards++;
+                }
+            } catch (Exception e) {}
+        } // end for each of the boards
+
+        // TODO what happens if a maze was not set?
+        // if (numGoodBoards != boards.length) {}
     }
 
 

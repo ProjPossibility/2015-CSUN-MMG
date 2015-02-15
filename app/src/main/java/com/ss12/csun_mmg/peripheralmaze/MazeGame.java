@@ -2,11 +2,14 @@ package com.ss12.csun_mmg.peripheralmaze;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.ss12.csun_mmg.peripheralmaze.util.SystemUiHider;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 /**
@@ -44,6 +47,11 @@ public class MazeGame extends Activity {
      */
     private SystemUiHider mSystemUiHider;
 
+    Maze [] boards;
+    int numBoards = R.integer.numBoards;
+    int numRows = R.integer.numRows;
+    int numCols = R.integer.numCols;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,14 +65,53 @@ public class MazeGame extends Activity {
         mSystemUiHider = SystemUiHider.getInstance(this, contentView, HIDER_FLAGS);
         mSystemUiHider.setup();
         mSystemUiHider.hide();
+
+        boards = new Maze [numBoards];
+        int numGoodBoards=0;
+        TypedArray boardData = getResources().obtainTypedArray(R.array.boardData);
+
+        for (int i=0; i<boardData.length(); i++) {
+            try {
+                JSONObject boardObj = new JSONObject(boardData.getString(i));
+                Maze newMaze = new Maze(numRows,numCols);
+                int numGoodTiles=0;
+
+                // iterate over each row x col index combo and get that property value
+                for (int row=0; row<numRows; row++) {
+                    for (int col=0; col<numCols; col++) {
+                        JSONArray data = boardObj.getJSONArray(String.format("%d%d",row,col));
+                        if (data != null && data.length() == numCols) {
+                            newMaze.setTile(
+                                    row, col,
+                                    new Tile(
+                                            new int[]{
+                                                    data.getInt(0),data.getInt(1),
+                                                    data.getInt(2),data.getInt(3)
+                                            },
+                                            data.getInt(6) == 1,
+                                            data.getInt(7) == 1
+                                    )
+                            );
+                            numGoodTiles++;
+                        }
+                    }
+                }
+
+                // if all tiles were clean, add this maze
+                if (numGoodTiles == numRows * numCols) {
+                    boards[i] = newMaze;
+                    numGoodBoards++;
+                }
+            } catch (Exception e) {}
+        } // end for each of the boards
+
+        // TODO what happens if a maze was not set?
+        // if (numGoodBoards != boards.length) {}
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        Intent intent = new Intent(this, ReviewMenu.class);
-        startActivity(intent);
     }
 
     @Override
@@ -74,17 +121,4 @@ public class MazeGame extends Activity {
         Intent intent = new Intent(this, ReviewMenu.class);
         startActivity(intent);
     }
-
-
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            return false;
-        }
-    };
 }

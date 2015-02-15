@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="numBoards">1</integer>
+    <integer name="numRows">8</integer>
+    <integer name="numCols">8</integer>
+</resources>
