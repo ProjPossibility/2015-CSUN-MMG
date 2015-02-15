@@ -10,41 +10,48 @@
         <activity
             android:name=".MainMenu"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme" >
+            android:label="@string/title_activity_main_menu"
+            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name=".JoinGameMenu"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_connection_page"
-            android:theme="@style/FullscreenTheme" >
+            android:label="@string/title_activity_join_menu"
+            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name=".GameModeMenu"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_mode_selector"
-            android:theme="@style/FullscreenTheme" >
-        </activity>
-        <activity
-            android:name=".HostGameMenu"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_host_game_layout"
-            android:theme="@style/FullscreenTheme" >
-        </activity>
-        <activity
-            android:name=".MazeGame"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_maze_game"
-            android:theme="@style/FullscreenTheme" >
-        </activity>
-        <activity
-            android:name=".util.BoardTest"
-            android:label="@string/title_activity_board_test" >
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".HostGameMenu"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_host_game_layout"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".MazeGame"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_maze_game"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".ReviewMenu"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_review_menu"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".util.BoardTest"
+            android:label="@string/title_activity_board_test" >
+
         </activity>
     </application>
 

@@ -1,7 +1,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@color/background_floating_material_dark" tools:context=".MainGame"
-    android:id="@+id/main_layout">
+    android:layout_height="match_parent" android:background="#0099cc" tools:context=".MainGame"
+    android:id="@+id/main_layout"
+    android:foregroundGravity="center_vertical">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -9,5 +11,34 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_host_game"
+            android:id="@+id/btn_host_game"
+            android:layout_gravity="left|center_vertical"
+            android:onClick="gotoHostMenu" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_join_game"
+            android:id="@+id/btn_join_game"
+            android:layout_gravity="center|right"
+            android:onClick="gotoJoinMenu" />
+
+    </LinearLayout>
+
+    <com.ss12.csun_mmg.peripheralmaze.DragButtonGroup android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/btn_main_menu_wheel"
+        custom:button_labels="@array/main_menu_control_labels" />
 
 </FrameLayout>

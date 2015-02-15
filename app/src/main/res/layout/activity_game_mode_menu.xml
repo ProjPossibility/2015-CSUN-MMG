@@ -11,24 +11,32 @@
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_selector_visual_desc"
-        android:id="@+id/text_visual_mode_desc"
-        android:layout_gravity="center" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_selector_audio_desc"
-        android:id="@+id/text_audio_mode_desc"
-        android:layout_gravity="center_horizontal|top" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mode_selector_audio_desc"
+            android:id="@+id/text_audio_mode_desc"
+            android:layout_gravity="center" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_selector_default_desc"
-        android:id="@+id/text_default_mode_desc"
-        android:layout_gravity="center|bottom" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mode_selector_visual_desc"
+            android:id="@+id/text_visual_mode_desc"
+            android:layout_gravity="center_horizontal|top" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mode_selector_default_desc"
+            android:id="@+id/text_default_mode_desc"
+            android:layout_gravity="center|bottom" />
+    </LinearLayout>
+
 </FrameLayout>
