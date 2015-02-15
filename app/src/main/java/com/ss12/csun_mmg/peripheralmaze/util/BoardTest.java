@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.ss12.csun_mmg.peripheralmaze.Board;
+import com.ss12.csun_mmg.peripheralmaze.Boards;
 import com.ss12.csun_mmg.peripheralmaze.R;
 import com.ss12.csun_mmg.peripheralmaze.Tile;
 
@@ -24,7 +24,7 @@ public class BoardTest extends ActionBarActivity {
         // Log.v("MazeParseDebug", "dump stuff");
 
         // TODO: relocate this code into a location that makes sense for maze parsing
-        Resources res = getResources();
+        /*Resources res = getResources();
         TypedArray boardData = res.obtainTypedArray(R.array.board1);
         int length = boardData.length();
 
@@ -66,8 +66,11 @@ public class BoardTest extends ActionBarActivity {
         Board testMaze = new Board(maze,length,length);
         //TODO: the final maze structure test is incomplete (Board/Tile untested)
         //Log.v("MazeParseDebug","Length is " + Integer.toString(length));
+*/
 
+        //Log.v("MazeParseDebug", "BoardTest invoked.");
 
+        //Board gameBoard = new Board();
     }
 
 

@@ -40,6 +40,10 @@
         <activity
             android:name=".util.BoardTest"
             android:label="@string/title_activity_board_test" >
+        </activity>
+        <activity
+            android:name=".Boards"
+            android:label="@string/title_activity_board" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
