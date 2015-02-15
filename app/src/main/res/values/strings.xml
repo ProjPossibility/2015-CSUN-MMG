@@ -12,5 +12,7 @@
     <string name="mode_selector_audio_desc">Swipe up on the screen for audio-based gaming</string>
     <string name="mode_selector_visual_desc">Swipe up on the screen for visual-based gaming</string>
     <string name="mode_selector_default_desc">Swipe either left or right for the default game mode</string>
+    <string name="title_activity_host_game_layout">Host Game Layout</string>
+    <string name="title_activity_maze_game">Maze Game</string>
 
 </resources>

@@ -1,15 +1,14 @@
 package com.ss12.csun_mmg.peripheralmaze;
 
+import com.ss12.csun_mmg.peripheralmaze.util.SystemUiHider;
+
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.GestureDetectorCompat;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.ss12.csun_mmg.peripheralmaze.util.SystemUiHider;
 
 
 /**
@@ -18,7 +17,7 @@ import com.ss12.csun_mmg.peripheralmaze.util.SystemUiHider;
  *
  * @see SystemUiHider
  */
-public class ModeSelectorActivity extends Activity {
+public class JoinGameMenu extends Activity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -35,7 +34,7 @@ public class ModeSelectorActivity extends Activity {
      * If set, will toggle the system UI visibility upon interaction. Otherwise,
      * will show the system UI visibility upon interaction.
      */
-    private static final boolean TOGGLE_ON_CLICK = false;
+    private static final boolean TOGGLE_ON_CLICK = true;
 
     /**
      * The flags to pass to {@link SystemUiHider#getInstance}.
@@ -47,56 +46,66 @@ public class ModeSelectorActivity extends Activity {
      */
     private SystemUiHider mSystemUiHider;
 
-    GestureDetector.SimpleOnGestureListener swipeDetector;
-    GestureDetectorCompat mDetector;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_mode_selector);
+        setContentView(R.layout.activity_join_game_menu);
 
-        final View contentView = findViewById(R.id.mode_selector_layout);
+        final View controlsView = findViewById(R.id.fullscreen_connection_controls);
+        final View contentView = findViewById(R.id.connection_layout);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
         mSystemUiHider = SystemUiHider.getInstance(this, contentView, HIDER_FLAGS);
         mSystemUiHider.setup();
-        mSystemUiHider.hide();
+        mSystemUiHider
+                .setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
+                    // Cached values.
+                    int mControlsHeight;
+                    int mShortAnimTime;
 
-        // TODO attach callback for swipe movements here
-        mDetector = new GestureDetectorCompat(this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                Log.d("debug","swipe: ["+velocityX+","+velocityY+"]");
+                    @Override
+                    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+                    public void onVisibilityChange(boolean visible) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                            // If the ViewPropertyAnimator API is available
+                            // (Honeycomb MR2 and later), use it to animate the
+                            // in-layout UI controls at the bottom of the
+                            // screen.
+                            if (mControlsHeight == 0) {
+                                mControlsHeight = controlsView.getHeight();
+                            }
+                            if (mShortAnimTime == 0) {
+                                mShortAnimTime = getResources().getInteger(
+                                        android.R.integer.config_shortAnimTime);
+                            }
+                            controlsView.animate()
+                                    .translationY(visible ? 0 : mControlsHeight)
+                                    .setDuration(mShortAnimTime);
+                        } else {
+                            // If the ViewPropertyAnimator APIs aren't
+                            // available, simply show or hide the in-layout UI
+                            // controls.
+                            controlsView.setVisibility(visible ? View.VISIBLE : View.GONE);
+                        }
 
-                double swipeMag = Math.sqrt((velocityX*velocityX) + (velocityY*velocityY));
-                if (swipeMag < 25 || velocityX==0 || velocityY==0) {
-                    return super.onFling(e1, e2, velocityX, velocityX);
-                }
-
-                float slope = velocityY/velocityX;
-                float slopeMag = Math.abs(slope);
-                if (slopeMag >= 1.0) {
-                    // swiped up or down
-                    if (slope > 0) {
-                        // swiped up
-                        Log.i(ModeSelectorActivity.class.getName(), "Setting game mode: " + GameMode.MODE.AUDIO_MODE);
-                        GameMode.setMode(GameMode.MODE.AUDIO_MODE);
-                    } else {
-                        // swiped down
-                        Log.i(ModeSelectorActivity.class.getName(), "Setting game mode: " + GameMode.MODE.VISUAL_MODE);
-                        GameMode.setMode(GameMode.MODE.VISUAL_MODE);
+                        if (visible && AUTO_HIDE) {
+                            // Schedule a hide().
+                            delayedHide(AUTO_HIDE_DELAY_MILLIS);
+                        }
                     }
+                });
+
+        // Set up the user interaction to manually show or hide the system UI.
+        contentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (TOGGLE_ON_CLICK) {
+                    mSystemUiHider.toggle();
                 } else {
-                    // swiped left or right
-                    Log.i(ModeSelectorActivity.class.getName(), "Setting game mode: " + GameMode.MODE.DEFAULT_MODE);
-                    GameMode.setMode(GameMode.MODE.DEFAULT_MODE);
+                    mSystemUiHider.show();
                 }
-
-                // TODO go to main menu screen
-
-                return super.onFling(e1, e2, velocityX, velocityY);
             }
         });
     }
@@ -109,11 +118,6 @@ public class ModeSelectorActivity extends Activity {
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(100);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return this.mDetector.onTouchEvent(event);
     }
 
 

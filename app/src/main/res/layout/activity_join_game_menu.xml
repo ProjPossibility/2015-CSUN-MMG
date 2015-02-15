@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="@color/background_floating_material_dark"
-    tools:context="com.ss12.csun_mmg.peripheralmaze.ConnectionPage"
+    tools:context="com.ss12.csun_mmg.peripheralmaze.JoinGameMenu"
     android:id="@+id/connection_layout">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
