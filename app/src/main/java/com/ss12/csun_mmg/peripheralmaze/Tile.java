@@ -4,16 +4,23 @@ package com.ss12.csun_mmg.peripheralmaze;
  * Created by Rosy Davis on 2015.02.14.
  */
 public class Tile {
+    public final static int NORTH = 0;
+    public final static int EAST = 1;
+    public final static int SOUTH = 2;
+    public final static int WEST = 3;
+
+    public String mPosition;
     public int[] walls;
     private boolean isStart;
     private boolean isEnd;
 
-    public Tile() {
-        this(new int[4], false, false);
+    public Tile(String position) {
+        this(position, new int[4], false, false);
     }
 
 
-    public Tile(int [] walls, boolean isStart, boolean isEnd) {
+    public Tile(String position, int [] walls, boolean isStart, boolean isEnd) {
+        mPosition = position;
         System.arraycopy(walls,0, this.walls,0, this.walls.length);
         this.isStart = isStart;
         this.isEnd = isEnd;
@@ -36,13 +43,13 @@ public class Tile {
         for (int i=0; i<walls.length; i++) {
             if (walls[i]!=0) {
                 switch(i) {
-                    case 0: spriteIds[numSprites--] = R.drawable.border_top;
+                    case NORTH: spriteIds[numSprites--] = R.drawable.border_top;
                         break;
-                    case 1: spriteIds[numSprites--] = R.drawable.border_bottom;
+                    case EAST: spriteIds[numSprites--] = R.drawable.border_right;
                         break;
-                    case 2: spriteIds[numSprites--] = R.drawable.border_right;
+                    case SOUTH: spriteIds[numSprites--] = R.drawable.border_bottom;
                         break;
-                    case 3: spriteIds[numSprites--] = R.drawable.border_left;
+                    case WEST: spriteIds[numSprites--] = R.drawable.border_left;
                         break;
                 }
             }

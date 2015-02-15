@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.ss12.csun_mmg.peripheralmaze.util.SystemUiHider;
@@ -52,6 +53,8 @@ public class Board extends Activity {
     int numRows = R.integer.numRows;
     int numCols = R.integer.numCols;
 
+    MazeGame mMazeGame;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,11 +82,13 @@ public class Board extends Activity {
                 // iterate over each row x col index combo and get that property value
                 for (int row=0; row<numRows; row++) {
                     for (int col=0; col<numCols; col++) {
-                        JSONArray data = boardObj.getJSONArray(String.format("%d%d",row,col));
+                        String position = String.format("%d%d",row,col);
+                        JSONArray data = boardObj.getJSONArray(position);
                         if (data != null && data.length() == numCols) {
                             newMaze.setTile(
                                     row, col,
                                     new Tile(
+                                            position,
                                             new int[]{
                                                     data.getInt(0),data.getInt(1),
                                                     data.getInt(2),data.getInt(3)
@@ -107,6 +112,14 @@ public class Board extends Activity {
 
         // TODO what happens if a maze was not set?
         // if (numGoodBoards != boards.length) {}
+
+        mMazeGame = new MazeGame(boards[0]);
+        mMazeGame.setEventCallback(new GameCallback() {
+            @Override
+            public void run(GameEvent event) {
+                Board.this.onGameEvent(event);
+            }
+        });
     }
 
     @Override
@@ -120,5 +133,28 @@ public class Board extends Activity {
         // TODO temporarily going straight to the review page
         Intent intent = new Intent(this, ReviewMenu.class);
         startActivity(intent);
+    }
+
+    private void onGameEvent(GameEvent event) {
+        Log.v("Board", "Received game event: "+event.toString());
+        switch (event.getEventType()) {
+            case PLAYER_WIN:
+            case PLAYER_LOSE:
+                // TODO post end game status to ReviewMenu activity
+                break;
+            case PLAYER_LOOK:
+                // TODO update sprite (orientation)
+                // TODO update ambient audio
+                break;
+            case PLAYER_MOVE:
+                // TODO update map buffer
+                // TODO update sprite
+                // TODO update ambient audio
+                break;
+            case PLAYER_COLLIDE:
+                // TODO play instant audio (grunt or painful sound)
+                // TODO provide haptic feedback
+                break;
+        }
     }
 }
