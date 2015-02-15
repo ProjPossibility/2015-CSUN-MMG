@@ -1,6 +1,7 @@
 package com.ss12.csun_mmg.peripheralmaze;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Vibrator;
 
 /**
@@ -61,7 +62,7 @@ public class Player {
     }
 
     private Tile getTileFromLocation(String location) {
-        return  Board.board[location.charAt(0)][location.charAt(1)];
+      return  Board.board[location.charAt(0)][location.charAt(1)];
     }
 
     private void vibrate(Context c, boolean b) {
@@ -69,5 +70,12 @@ public class Player {
         pattern = (b) ? new long[]{0,200,100,500} : new long[]{0,50};
         Vibrator v = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(pattern,1);
+    }
+
+    public void moveSoundEffect(Context c, boolean b) {
+        MediaPlayer mediaPlayer;
+        int audioFile = (b) ? R.raw.blip_wall : R.raw.blip_no_wall;
+        mediaPlayer = MediaPlayer.create(c, audioFile);
+        mediaPlayer.start();
     }
 }
