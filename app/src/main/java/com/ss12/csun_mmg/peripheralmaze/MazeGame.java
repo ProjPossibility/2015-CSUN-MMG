@@ -49,8 +49,7 @@ public class MazeGame extends Activity {
 
         setContentView(R.layout.activity_maze_game);
 
-        final View controlsView = findViewById(R.id.fullscreen_content_controls);
-        final View contentView = findViewById(R.id.fullscreen_content);
+        final View contentView = findViewById(R.id.maze_game_layout);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.

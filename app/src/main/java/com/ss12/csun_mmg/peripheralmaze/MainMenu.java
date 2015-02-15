@@ -49,7 +49,6 @@ public class MainMenu extends Activity {
 
         setContentView(R.layout.activity_main_menu);
 
-        final View controlsView = findViewById(R.id.fullscreen_content_controls);
         final View contentView = findViewById(R.id.main_layout);
 
         // Set up an instance of SystemUiHider to control the system UI for

@@ -67,19 +67,22 @@ public class GameModeMenu extends Activity {
         // TODO attach callback for swipe movements here
         mDetector = new GestureDetectorCompat(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                Log.d(GameModeMenu.class.getName(), "User tapped to replay options audio");
+                return super.onSingleTapConfirmed(e);
+            }
+
+            @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                Log.d("debug","swipe: ["+velocityX+","+velocityY+"]");
+                float dx = e2.getX() - e1.getX();
+                float dy = e2.getY() - e1.getY();
+                dx = dx==0 ? 1 : dx;
+                dy = dy==0 ? 1 : dy;
+                Log.d("debug","swipe: ["+dx+","+dy+"]");
 
-                double swipeMag = Math.sqrt((velocityX*velocityX) + (velocityY*velocityY));
-                if (swipeMag < 25 || velocityX==0 || velocityY==0) {
-                    return super.onFling(e1, e2, velocityX, velocityX);
-                }
-
-                float slope = velocityY/velocityX;
-                float slopeMag = Math.abs(slope);
-                if (slopeMag >= 1.0) {
+                if (Math.abs(dy) >= Math.abs(dx)) {
                     // swiped up or down
-                    if (slope > 0) {
+                    if (dy <= 0) {
                         // swiped up
                         Log.i(GameModeMenu.class.getName(), "Setting game mode: " + GameMode.MODE.AUDIO_MODE);
                         GameMode.setMode(GameMode.MODE.AUDIO_MODE);

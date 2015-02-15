@@ -49,8 +49,7 @@ public class JoinGameMenu extends Activity {
 
         setContentView(R.layout.activity_join_game_menu);
 
-        final View controlsView = findViewById(R.id.fullscreen_connection_controls);
-        final View contentView = findViewById(R.id.connection_layout);
+        final View contentView = findViewById(R.id.join_game_layout);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
