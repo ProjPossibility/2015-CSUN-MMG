@@ -1,8 +1,8 @@
 package com.ss12.csun_mmg.peripheralmaze;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -47,8 +47,8 @@ public class GameModeMenu extends Activity {
      */
     private SystemUiHider mSystemUiHider;
 
-    GestureDetector.SimpleOnGestureListener swipeDetector;
     GestureDetectorCompat mDetector;
+    int[] audioInstructions = new int[] {R.raw.mode_vocals_audio, R.raw.mode_vocals_visual, R.raw.mode_vocals_default, R.raw.mode_vocals_repeat};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,11 +107,7 @@ public class GameModeMenu extends Activity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100);
+        playInstructions(0);
     }
 
     @Override
@@ -128,27 +124,23 @@ public class GameModeMenu extends Activity {
     View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
             return false;
         }
     };
 
-    Handler mHideHandler = new Handler();
-    Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mSystemUiHider.hide();
+    private void playInstructions(final int i) {
+        if (i >= audioInstructions.length) {
+            return;
         }
-    };
-
-    /**
-     * Schedules a call to hide() in [delay] milliseconds, canceling any
-     * previously scheduled calls.
-     */
-    private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+        final MediaPlayer audio = MediaPlayer.create(this, audioInstructions[i]);
+        audio.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                audio.stop();
+                audio.release();
+                playInstructions(i+1);
+            }
+        });
+        audio.start();
     }
 }
