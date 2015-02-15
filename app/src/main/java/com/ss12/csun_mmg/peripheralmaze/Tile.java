@@ -5,18 +5,16 @@ package com.ss12.csun_mmg.peripheralmaze;
  */
 public class Tile {
     public int[] walls;
-    public boolean isStart;
-    public boolean isEnd;
+    private boolean isStart;
+    private boolean isEnd;
 
     public Tile() {
-        walls  = new int[4];
-        isStart = false;
-        isEnd = false;
+        this(new int[4], false, false);
     }
 
 
     public Tile(int [] walls, boolean isStart, boolean isEnd) {
-        this.walls  = walls;
+        System.arraycopy(walls,0, this.walls,0, this.walls.length);
         this.isStart = isStart;
         this.isEnd = isEnd;
     }
@@ -26,8 +24,30 @@ public class Tile {
 
     public boolean isStartTile () { return isStart; }
 
-    public void drawTile () {
-        /* needs to be filled in */
-        /* draw wall for each wall [N E S W] that is 0 in the walls array */
+    public int[] getSpriteIds() {
+        // TODO based on current values, return ID of corresponding sprite file
+        int numSprites=0;
+        for (int i=0; i<walls.length; i++) {
+            if (walls[i]!=0) {
+                numSprites++;
+            }
+        }
+        int[] spriteIds = new int[numSprites];
+        for (int i=0; i<walls.length; i++) {
+            if (walls[i]!=0) {
+                switch(i) {
+                    case 0: spriteIds[numSprites--] = R.drawable.border_top;
+                        break;
+                    case 1: spriteIds[numSprites--] = R.drawable.border_bottom;
+                        break;
+                    case 2: spriteIds[numSprites--] = R.drawable.border_right;
+                        break;
+                    case 3: spriteIds[numSprites--] = R.drawable.border_left;
+                        break;
+                }
+            }
+        }
+
+        return spriteIds;
     }
 }

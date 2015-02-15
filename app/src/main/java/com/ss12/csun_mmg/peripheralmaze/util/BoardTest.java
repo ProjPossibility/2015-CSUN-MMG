@@ -1,16 +1,9 @@
 package com.ss12.csun_mmg.peripheralmaze.util;
 
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.ss12.csun_mmg.peripheralmaze.Boards;
 import com.ss12.csun_mmg.peripheralmaze.R;
-import com.ss12.csun_mmg.peripheralmaze.Tile;
 
 
 public class BoardTest extends ActionBarActivity {
@@ -71,28 +64,5 @@ public class BoardTest extends ActionBarActivity {
         //Log.v("MazeParseDebug", "BoardTest invoked.");
 
         //Board gameBoard = new Board();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_board_test, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

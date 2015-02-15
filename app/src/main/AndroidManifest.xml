@@ -37,7 +37,7 @@
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name=".MazeGame"
+            android:name=".Board"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_maze_game"
             android:screenOrientation="landscape" >
