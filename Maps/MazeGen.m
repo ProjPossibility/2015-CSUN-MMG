@@ -3,20 +3,27 @@ clear
 validMazes = 0;
 invalidMazes = 0;
 mazeSize = 8;
+maze(mazeSize,mazeSize) = 0;
+maxValid = 10;
+maxInvalid = 10000;
 
-while ((validMazes) < 1 & (invalidMazes < 100))
+while ((validMazes < maxValid) & (invalidMazes < maxInvalid))
     [maze,isValid] = Generate;
     if (isValid) 
         disp('Valid maze found:')
         maze
         pause(1)
         validMazes = validMazes + 1;
+        mazeName = sprintf('SampleMaze%g',validMazes);
+        %save(sprintf('%s.mat',mazeName),'maze')
+        dlmwrite(sprintf('%s.txt',mazeName),maze,'Delimiter',' ','NewLine','PC')
     else
         invalidMazes = invalidMazes + 1;
-        disp(sprintf('Invalid maze number %g found:',invalidMazes))
-        maze
+        %disp(sprintf('Invalid maze number %g found:',invalidMazes))
     end
+    
 end
+
 
     function [maze, isValid] = Generate
         rng('shuffle');
@@ -49,7 +56,7 @@ end
                 end
                 % W -> 2^2
                 if (n == 1)
-                    tile = tile + 2^2
+                    tile = tile + 2^2;
                 else
                     % for things that aren't in the first column, they need to
                     % pull their western wall from the eastern wall of
@@ -71,7 +78,7 @@ end
         maze(mazeEndRow,mazeEndCol) = maze(mazeEndRow,mazeEndCol) + 1;
         
         isValid = isValidMaze (maze,[mazeStartRow,mazeStartCol],...
-            [mazeEndRow,mazeEndCol])
+            [mazeEndRow,mazeEndCol]);
     end
 
     function isValid = isValidMaze(maze, mazeStart, mazeEnd)
@@ -79,22 +86,22 @@ end
         facing =  [0 0 1 0]; % facing south by default
         counter = 0;
         escaped = 0;
-        while ~escaped
-            counter = counter + 1; % used for emergency brake on looping
-            
+        while (~escaped)
             % parse tile code into an array for human readability
             tileCode = maze(position(1),position(2));
             tileFull = mazeTileFromNumber(tileCode);
-            tileArray = tileFull(1:4)
-            
+            tileArray = tileFull(1:4);
             if ((position ~= mazeStart) & ...
-                    (tileArray(mod(find(facing == 1)+1,4)+1) == 1))
+                    (tileArray(mod(find(facing == 1)+1,4)+1) == 1) & ...
+                    counter > 0)
                 % back is not clear = made an invalid move!
-                display('Debugging output:')
+                display('Debugging output for invalid move:')
+                counter
                 facing
                 tileArray
                 maze
                 position
+                save('invalidMaze.mat','maze')
                 error('Moved through an unduplicated wall!')
             end
             
@@ -102,8 +109,6 @@ end
             % your front is clear.
             
             positionGood = 0; 
-            % 0 = bad position; 1 = front is clear; 2 = front is clear and
-            % also there is a wall on the right.
             
             % can turn up to 4 times?prevents twirling
             clearFaceFound = 0;
@@ -111,6 +116,7 @@ end
                 facingIndex = find(facing == 1);
                 if (tileArray(facingIndex) == 0) 
                     % front is clear - record this state was found
+                    % disp('Front is clear.')
                     clearFaceFound = 1;
                     
                     % OK to move in this position if we are in it at end of
@@ -130,34 +136,57 @@ end
                         break
                     end
                 else % front is blocked--turn.
-                        facing = turnRight(facing);
-                        facingIndex = find(facing == 1);
-                        turnCounter = turnCounter + 1;
-                        
-                        % reset positionGood - no idea if we are facing a wall
-                        positionGood = 0; 
+                    % disp('Front is blocked.')
+                    facing = turnRight(facing);
+                    facingIndex = find(facing == 1);
+                    turnCounter = turnCounter + 1;
+
+                    % reset positionGood - no idea if we are facing a wall
+                    positionGood = 0; 
                 end
             end
             
-            if ((~positionGood) && (~clearFaceFound))
-                % no way out! no clear face found! invalid maze
-                display('Debugging output:')
-                facing
-                tileArray
-                position
-                warning('No clear face found at this position.')
-                break
+            if (positionGood == 0)
+                if (clearFaceFound == 0)
+                    % no way out! no clear face found! invalid maze if this
+                    % is the starting position.
+                    if position == mazeStart
+                        isValid = 0;
+                        return
+                    end
+                    display('Debugging output for island:')
+                    facing
+                    tileArray
+                    position
+                    warning('No clear face found at this position.')
+                    break
+                else % a clear face was found--find it again
+                    for p=1:4
+                        facing = turnRight(facing);
+                        % reset positionGood
+                        positionGood = 0;
+                        
+                        facingIndex = find(facing == 1);
+                        if (tileArray(facingIndex) == 0) 
+                            positionGood = 1;
+                            break
+                        end
+                    end
+                end
             end
                 
             if (positionGood)
                 % OK to move
                 if (tileArray(facingIndex) == 0)
-%                     disp('Debugging output:')
+                    facingIndex = find(facing == 1);
+                    
+%                     disp('Debugging output before move:')
 %                     position
 %                     facing
 %                     tileArray
+%                     facing
 %                     disp('Moving...')
-                    %facingIndex = find(facing == 1);
+
                     switch (facingIndex)
                         case 1
                             position(1) = position(1) - 1;
@@ -176,10 +205,17 @@ end
                     positionGood
                     error('Error encountered with assigning positionGood.')
                 end
+            else 
+                disp('Debugging output:')
+                tileArray
+                facing
+                position
+                positionGood
+                error('Position is bad--no available move detected.')
             end
             
             % check for the end tile
-            escaped = (mod(tileCode,2) == 1)
+            escaped = (mod(tileCode,2) == 1);
             if (escaped) 
                 disp ('Escaped!')
             end
@@ -189,13 +225,14 @@ end
                 isValid = 0;
                 return
             end
+        counter = counter + 1; % used for emergency brake on looping
         end
         isValid = escaped;
     end
 
     function facing = turnRight (facing)
-        disp('Turn.');
-        facing = [facing(4) facing(1:3)]
+        %disp('Turn.');
+        facing = [facing(4) facing(1:3)];
     end
 end
 
