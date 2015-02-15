@@ -1,6 +1,7 @@
 package com.ss12.csun_mmg.peripheralmaze;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
@@ -49,6 +50,12 @@ public class GameModeMenu extends Activity {
 
     GestureDetectorCompat mDetector;
     int[] audioInstructions = new int[] {R.raw.mode_vocals_audio, R.raw.mode_vocals_visual, R.raw.mode_vocals_default, R.raw.mode_vocals_repeat};
+    boolean playingInstructions=false;
+    MediaPlayer mpAudio;
+    MediaPlayer mpVisual;
+    MediaPlayer mpDefault;
+    MediaPlayer mpRepeat;
+    MediaPlayer[] audios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,7 @@ public class GameModeMenu extends Activity {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 Log.d(GameModeMenu.class.getName(), "User tapped to replay options audio");
+                GameModeMenu.this.playInstructions();
                 return super.onSingleTapConfirmed(e);
             }
 
@@ -98,6 +106,8 @@ public class GameModeMenu extends Activity {
                 }
 
                 // TODO go to main menu screen
+                Intent intent = new Intent(GameModeMenu.this, MainMenu.class);
+                startActivity(intent);
 
                 return super.onFling(e1, e2, velocityX, velocityY);
             }
@@ -105,9 +115,61 @@ public class GameModeMenu extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        mpAudio = MediaPlayer.create(this, R.raw.mode_vocals_audio);
+        mpVisual = MediaPlayer.create(this, R.raw.mode_vocals_visual);
+        mpDefault = MediaPlayer.create(this, R.raw.mode_vocals_default);
+        mpRepeat = MediaPlayer.create(this, R.raw.mode_vocals_repeat);
+        audios = new MediaPlayer[]{mpAudio,mpVisual,mpDefault,mpRepeat};
+        mpAudio.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mpVisual.start();
+            }
+        });
+        mpVisual.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mpDefault.start();
+            }
+        });
+        mpDefault.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mpRepeat.start();
+            }
+        });
+        mpRepeat.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mpRepeat.reset();
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        stopInstructions();
+        mpAudio.release();
+        mpVisual.release();
+        mpDefault.release();
+        mpRepeat.release();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        playInstructions();
+    }
+
+    @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        playInstructions(0);
     }
 
     @Override
@@ -115,32 +177,22 @@ public class GameModeMenu extends Activity {
         return this.mDetector.onTouchEvent(event);
     }
 
-
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            return false;
-        }
-    };
-
-    private void playInstructions(final int i) {
-        if (i >= audioInstructions.length) {
-            return;
-        }
-        final MediaPlayer audio = MediaPlayer.create(this, audioInstructions[i]);
-        audio.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                audio.stop();
-                audio.release();
-                playInstructions(i+1);
+    private void playInstructions() {
+        for (MediaPlayer mp : audios) {
+            if (mp.isPlaying()) {
+                return;
             }
-        });
-        audio.start();
+        }
+
+        mpAudio.start();
+    }
+
+    private void stopInstructions() {
+        for (MediaPlayer mp : audios) {
+            if (mp.isPlaying()) {
+                mp.stop();
+                mp.reset();
+            }
+        }
     }
 }
