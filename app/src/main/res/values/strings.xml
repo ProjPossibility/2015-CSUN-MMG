@@ -13,9 +13,9 @@
     <string name="title_activity_host_game_layout">Host Game Layout</string>
     <string name="title_activity_maze_game">Maze Game</string>
     <string name="title_activity_review_menu">Review Menu</string>
-    <string name="btn_host_game">Host</string>
-    <string name="btn_join_game">Join</string>
-    <string name="btn_exit_app">Exit</string>
+    <string name="str_host">Host</string>
+    <string name="str_join">Join</string>
+    <string name="str_exit">Exit</string>
     <string name="btn_rematch">Rematch</string>
     <string name="btn_main_menu">Main Menu</string>
     <string name="title_activity_board_test">BoardTest</string>

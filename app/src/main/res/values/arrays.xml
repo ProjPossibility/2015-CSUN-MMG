@@ -7,9 +7,7 @@
         <item>{"30":"[1 1 1 1 1 0]","31":"[1 1 1 1 1 0]","32":"[1 1 1 1 1 0]","33":"[1 1 1 1 1 0]"}</item>
     </array>
 
-    <string-array name="main_menu_control_labels">
-        <item>Host</item>
-        <item>Join</item>
-        <item>Exit</item>
-    </string-array>
+    <array name="main_menu_controls">
+        <item>@layout/btn_drag_exit</item>
+    </array>
 </resources>
