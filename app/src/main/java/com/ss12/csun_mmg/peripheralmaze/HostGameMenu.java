@@ -68,7 +68,7 @@ public class HostGameMenu extends Activity {
     protected void onResume() {
         super.onResume();
         // TODO just go straight into game view for now
-        Intent intent = new Intent(this, MazeGame.class);
+        Intent intent = new Intent(this, Board.class);
         startActivity(intent);
     }
 

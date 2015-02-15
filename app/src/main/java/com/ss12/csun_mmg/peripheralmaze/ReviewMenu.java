@@ -83,7 +83,7 @@ public class ReviewMenu extends Activity {
     }
 
     public void gotoMazeGame(View view) {
-        Intent intent = new Intent(this, MazeGame.class);
+        Intent intent = new Intent(this, Board.class);
         startActivity(intent);
     }
 }

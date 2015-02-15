@@ -18,7 +18,7 @@ import org.json.JSONObject;
  *
  * @see SystemUiHider
  */
-public class MazeGame extends Activity {
+public class Board extends Activity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -56,7 +56,7 @@ public class MazeGame extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_maze_game);
+        setContentView(R.layout.activity_board);
 
         final View contentView = findViewById(R.id.maze_game_layout);
 
