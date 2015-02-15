@@ -10,13 +10,19 @@ public class MazeGame {
     Tile mStartTile, mEndTile;
     GameCallback mEventCallback;
 
+    private MazeGame(){}
+
     public MazeGame(Maze maze) {
         mMaze = maze;
         mStartTile = mMaze.getStartTile();
         mEndTile = mMaze.getEndTile();
-        mPlayer = new Player(mStartTile.mPosition, 0);
+        mPlayer = new Player(this, mStartTile.mPosition, 0);
 
         // TODO randomize player direction
+    }
+
+    public void start() {
+        signal(GameEvent.EVENT_TYPE.GAME_START, mPlayer);
     }
 
     public void movePlayer(int direction) {
@@ -30,6 +36,14 @@ public class MazeGame {
         } else {
             signal(GameEvent.EVENT_TYPE.PLAYER_COLLIDE, mPlayer);
         }
+    }
+
+    public Tile getPlayerTile() {
+        return mPlayer.currentTile;
+    }
+
+    public Maze getMaze() {
+        return mMaze;
     }
 
     public void setEventCallback(GameCallback callback) {

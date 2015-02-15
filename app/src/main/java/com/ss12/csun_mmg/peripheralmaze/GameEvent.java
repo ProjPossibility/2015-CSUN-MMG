@@ -5,6 +5,7 @@ package com.ss12.csun_mmg.peripheralmaze;
  */
 public class GameEvent {
     public static enum EVENT_TYPE {
+        GAME_START,
         PLAYER_MOVE,
         PLAYER_LOOK,
         PLAYER_COLLIDE,

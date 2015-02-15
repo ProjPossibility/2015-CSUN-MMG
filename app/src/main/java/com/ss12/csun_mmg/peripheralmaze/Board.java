@@ -1,11 +1,14 @@
 package com.ss12.csun_mmg.peripheralmaze;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.ss12.csun_mmg.peripheralmaze.util.SystemUiHider;
 
@@ -49,19 +52,35 @@ public class Board extends Activity {
     private SystemUiHider mSystemUiHider;
 
     Maze [] boards;
-    int numBoards = R.integer.numBoards;
-    int numRows = R.integer.numRows;
-    int numCols = R.integer.numCols;
+    int numBoards = -1;
+    int numRows = -1;
+    int numCols = -1;
 
     MazeGame mMazeGame;
+
+    ImageView mMapSprite;
+
+    Resources mResources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mResources = getResources();
+
         setContentView(R.layout.activity_board);
 
         final View contentView = findViewById(R.id.maze_game_layout);
+
+        mMapSprite = (ImageView)findViewById(R.id.map_sprite);
+
+        numBoards = mResources.getInteger(R.integer.numBoards);
+        numRows = mResources.getInteger(R.integer.numRows);
+        numCols = mResources.getInteger(R.integer.numCols);
+
+        Log.v("Board", "numBoards: "+numBoards);
+        Log.v("Board", "numRows: "+numRows);
+        Log.v("Board", "numCols: "+numCols);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
@@ -78,26 +97,32 @@ public class Board extends Activity {
                 JSONObject boardObj = new JSONObject(boardData.getString(i));
                 Maze newMaze = new Maze(numRows,numCols);
                 int numGoodTiles=0;
+                JSONArray tiles = boardObj.getJSONArray("tiles");
 
                 // iterate over each row x col index combo and get that property value
                 for (int row=0; row<numRows; row++) {
+                    JSONArray rowData = tiles.getJSONArray(row);
                     for (int col=0; col<numCols; col++) {
-                        String position = String.format("%d%d",row,col);
-                        JSONArray data = boardObj.getJSONArray(position);
-                        if (data != null && data.length() == numCols) {
+                        JSONArray colData = rowData.getJSONArray(col);
+                        String position = String.format("%d%d", row, col);
+                        if (colData != null && colData.length() == 6) {
                             newMaze.setTile(
                                     position,
                                     new Tile(
                                             position,
                                             new int[]{
-                                                    data.getInt(0),data.getInt(1),
-                                                    data.getInt(2),data.getInt(3)
+                                                    colData.getInt(0),colData.getInt(1),
+                                                    colData.getInt(2),colData.getInt(3)
                                             },
-                                            data.getInt(6) == 1,
-                                            data.getInt(7) == 1
+                                            colData.getInt(4) == 1,
+                                            colData.getInt(5) == 1
                                     )
                             );
                             numGoodTiles++;
+                        } else {
+                            if (colData== null) {
+
+                            }
                         }
                     }
                 }
@@ -106,12 +131,18 @@ public class Board extends Activity {
                 if (numGoodTiles == numRows * numCols) {
                     boards[i] = newMaze;
                     numGoodBoards++;
+                } else {
+                    Log.e("Board", ((numRows*numCols)-numGoodTiles)+"/"+(numRows*numCols)+" tiles did not get initialized");
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } // end for each of the boards
 
         // TODO what happens if a maze was not set?
-        // if (numGoodBoards != boards.length) {}
+        if (numGoodBoards != boards.length) {
+            Log.e("Board", (boards.length-numGoodBoards)+"/"+boards.length+" boards did not initialize");
+        }
 
         mMazeGame = new MazeGame(boards[0]);
         mMazeGame.setEventCallback(new GameCallback() {
@@ -120,6 +151,8 @@ public class Board extends Activity {
                 Board.this.onGameEvent(event);
             }
         });
+
+        mMazeGame.start();
     }
 
     @Override
@@ -130,14 +163,34 @@ public class Board extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        // TODO temporarily going straight to the review page
-        Intent intent = new Intent(this, ReviewMenu.class);
-        startActivity(intent);
+
+    }
+
+    private void updateUI() {
+        Tile tile = mMazeGame.getPlayerTile();
+        if (tile == null) {
+            return;
+        }
+
+        int[] spriteIds = tile.getSpriteIds();
+        Drawable[] drawables = new Drawable[spriteIds.length];
+
+        for (int i=0; i<drawables.length; i++) {
+            drawables[i] = mResources.getDrawable(spriteIds[i]);
+        }
+        LayerDrawable layerDrawable = new LayerDrawable(drawables);
+        mMapSprite.setImageDrawable(layerDrawable);
+
+        mMapSprite.setImageDrawable(getResources().getDrawable(R.drawable.map_sprite));
+        mMapSprite.invalidate();
     }
 
     private void onGameEvent(GameEvent event) {
-        Log.v("Board", "Received game event: "+event.toString());
+        Log.v("Board", "Received game event: " + event.getEventType().name());
         switch (event.getEventType()) {
+            case GAME_START:
+                // TODO update UI
+                break;
             case PLAYER_WIN:
             case PLAYER_LOSE:
                 // TODO post end game status to ReviewMenu activity
@@ -156,5 +209,6 @@ public class Board extends Activity {
                 // TODO provide haptic feedback
                 break;
         }
+        updateUI();
     }
 }

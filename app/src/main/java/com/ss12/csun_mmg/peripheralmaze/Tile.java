@@ -21,7 +21,10 @@ public class Tile {
 
     public Tile(String position, int [] walls, boolean isStart, boolean isEnd) {
         mPosition = position;
-        System.arraycopy(walls,0, this.walls,0, this.walls.length);
+        this.walls = new int[4];
+        if (walls != null && walls.length >= this.walls.length) {
+            System.arraycopy(walls, 0, this.walls, 0, this.walls.length);
+        }
         this.isStart = isStart;
         this.isEnd = isEnd;
     }
@@ -43,13 +46,13 @@ public class Tile {
         for (int i=0; i<walls.length; i++) {
             if (walls[i]!=0) {
                 switch(i) {
-                    case NORTH: spriteIds[numSprites--] = R.drawable.border_top;
+                    case NORTH: spriteIds[--numSprites] = R.drawable.border_top;
                         break;
-                    case EAST: spriteIds[numSprites--] = R.drawable.border_right;
+                    case EAST: spriteIds[--numSprites] = R.drawable.border_right;
                         break;
-                    case SOUTH: spriteIds[numSprites--] = R.drawable.border_bottom;
+                    case SOUTH: spriteIds[--numSprites] = R.drawable.border_bottom;
                         break;
-                    case WEST: spriteIds[numSprites--] = R.drawable.border_left;
+                    case WEST: spriteIds[--numSprites] = R.drawable.border_left;
                         break;
                 }
             }

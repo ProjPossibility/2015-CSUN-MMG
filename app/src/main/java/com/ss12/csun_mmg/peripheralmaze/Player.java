@@ -12,8 +12,10 @@ public class Player {
     public int facing;
     public Tile currentTile;
     public int stepCounter;
+    public MazeGame mMazeGame;
 
-    public Player (String l, int f) {
+    public Player (MazeGame mazeGame, String l, int f) {
+        mMazeGame = mazeGame;
         location = l;
         facing = f;
         currentTile = getTileFromLocation(l);
@@ -62,7 +64,9 @@ public class Player {
     }
 
     private Tile getTileFromLocation(String location) {
-      return  Board.board[location.charAt(0)][location.charAt(1)];
+        int row = Integer.parseInt(location.substring(0,1));
+        int col = Integer.parseInt(location.substring(1,2));
+        return mMazeGame.getMaze().mazeTiles[row][col];
     }
 
     private void vibrate(Context c, boolean b) {
