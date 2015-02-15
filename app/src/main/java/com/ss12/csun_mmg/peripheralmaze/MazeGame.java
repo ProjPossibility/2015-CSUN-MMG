@@ -1,6 +1,7 @@
 package com.ss12.csun_mmg.peripheralmaze;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -61,6 +62,17 @@ public class MazeGame extends Activity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        Intent intent = new Intent(this, ReviewMenu.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // TODO temporarily going straight to the review page
+        Intent intent = new Intent(this, ReviewMenu.class);
+        startActivity(intent);
     }
 
 

@@ -15,7 +15,7 @@ import com.ss12.csun_mmg.peripheralmaze.util.SystemUiHider;
  *
  * @see SystemUiHider
  */
-public class MainMenu extends Activity {
+public class ReviewMenu extends Activity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -44,16 +44,13 @@ public class MainMenu extends Activity {
      */
     private SystemUiHider mSystemUiHider;
 
-    private DragButtonGroup wheel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main_menu);
+        setContentView(R.layout.activity_review_menu);
 
-        final View contentView = findViewById(R.id.main_layout);
-        wheel = (DragButtonGroup)findViewById(R.id.btn_main_menu_wheel);
+        final View contentView = findViewById(R.id.review_menu_layout);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
@@ -67,6 +64,7 @@ public class MainMenu extends Activity {
         super.onPostCreate(savedInstanceState);
     }
 
+
     /**
      * Touch listener to use for in-layout UI controls to delay hiding the
      * system UI. This is to prevent the jarring behavior of controls going away
@@ -75,23 +73,17 @@ public class MainMenu extends Activity {
     View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            return false;
+           return false;
         }
     };
 
-    public void gotoHostMenu(View view) {
-        Intent intent = new Intent(MainMenu.this, HostGameMenu.class);
+    public void gotoMainMenu(View view) {
+        Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
     }
 
-    public void gotoJoinMenu(View view) {
-        Intent intent = new Intent(MainMenu.this, JoinGameMenu.class);
+    public void gotoMazeGame(View view) {
+        Intent intent = new Intent(this, MazeGame.class);
         startActivity(intent);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        wheel.onTouchEvent(event);
-        return super.onTouchEvent(event);
     }
 }

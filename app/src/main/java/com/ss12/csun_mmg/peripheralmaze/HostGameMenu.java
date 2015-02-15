@@ -1,6 +1,7 @@
 package com.ss12.csun_mmg.peripheralmaze;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -61,6 +62,14 @@ public class HostGameMenu extends Activity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // TODO just go straight into game view for now
+        Intent intent = new Intent(this, MazeGame.class);
+        startActivity(intent);
     }
 
 
