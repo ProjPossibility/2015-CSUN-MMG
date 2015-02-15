@@ -29,11 +29,20 @@ public class Maze {
         this.numCols = mazeTiles[0].length;
     }
 
-    public void setTile(int row, int col, Tile tile) {
-        mazeTiles[row][col] = tile;
+    public void setTile(String position, Tile tile) {
+        try {
+            int row = Integer.parseInt(position.substring(0,1));
+            int col = Integer.parseInt(position.substring(1,2));
+            mazeTiles[row][col] = tile;
+        } catch (Exception e) {}
     }
 
-    public Tile getTile(int row, int col) {
+    public Tile getTile(String position) {
+        try {
+            int row = Integer.parseInt(position.substring(0,1));
+            int col = Integer.parseInt(position.substring(1,2));
+            return mazeTiles[row][col];
+        } catch (Exception e) {}
         return null;
     }
 

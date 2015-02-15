@@ -86,7 +86,7 @@ public class Board extends Activity {
                         JSONArray data = boardObj.getJSONArray(position);
                         if (data != null && data.length() == numCols) {
                             newMaze.setTile(
-                                    row, col,
+                                    position,
                                     new Tile(
                                             position,
                                             new int[]{
