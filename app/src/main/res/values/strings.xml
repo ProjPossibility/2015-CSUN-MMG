@@ -14,5 +14,8 @@
     <string name="mode_selector_default_desc">Swipe either left or right for the default game mode</string>
     <string name="title_activity_host_game_layout">Host Game Layout</string>
     <string name="title_activity_maze_game">Maze Game</string>
+    <string name="title_activity_board_test">BoardTest</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
