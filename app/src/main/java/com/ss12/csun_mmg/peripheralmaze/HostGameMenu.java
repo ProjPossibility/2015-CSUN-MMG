@@ -49,7 +49,7 @@ public class HostGameMenu extends Activity {
 
         setContentView(R.layout.activity_host_game_menu);
 
-        final View contentView = findViewById(R.id.fullscreen_content);
+        final View contentView = findViewById(R.id.host_game_layout);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.

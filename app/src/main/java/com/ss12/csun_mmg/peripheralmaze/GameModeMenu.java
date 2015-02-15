@@ -1,8 +1,8 @@
 package com.ss12.csun_mmg.peripheralmaze;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -47,8 +47,8 @@ public class GameModeMenu extends Activity {
      */
     private SystemUiHider mSystemUiHider;
 
-    GestureDetector.SimpleOnGestureListener swipeDetector;
     GestureDetectorCompat mDetector;
+    int[] audioInstructions = new int[] {R.raw.mode_vocals_audio, R.raw.mode_vocals_visual, R.raw.mode_vocals_default, R.raw.mode_vocals_repeat};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,19 +67,22 @@ public class GameModeMenu extends Activity {
         // TODO attach callback for swipe movements here
         mDetector = new GestureDetectorCompat(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                Log.d(GameModeMenu.class.getName(), "User tapped to replay options audio");
+                return super.onSingleTapConfirmed(e);
+            }
+
+            @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                Log.d("debug","swipe: ["+velocityX+","+velocityY+"]");
+                float dx = e2.getX() - e1.getX();
+                float dy = e2.getY() - e1.getY();
+                dx = dx==0 ? 1 : dx;
+                dy = dy==0 ? 1 : dy;
+                Log.d("debug","swipe: ["+dx+","+dy+"]");
 
-                double swipeMag = Math.sqrt((velocityX*velocityX) + (velocityY*velocityY));
-                if (swipeMag < 25 || velocityX==0 || velocityY==0) {
-                    return super.onFling(e1, e2, velocityX, velocityX);
-                }
-
-                float slope = velocityY/velocityX;
-                float slopeMag = Math.abs(slope);
-                if (slopeMag >= 1.0) {
+                if (Math.abs(dy) >= Math.abs(dx)) {
                     // swiped up or down
-                    if (slope > 0) {
+                    if (dy <= 0) {
                         // swiped up
                         Log.i(GameModeMenu.class.getName(), "Setting game mode: " + GameMode.MODE.AUDIO_MODE);
                         GameMode.setMode(GameMode.MODE.AUDIO_MODE);
@@ -104,11 +107,7 @@ public class GameModeMenu extends Activity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100);
+        playInstructions(0);
     }
 
     @Override
@@ -125,27 +124,23 @@ public class GameModeMenu extends Activity {
     View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
             return false;
         }
     };
 
-    Handler mHideHandler = new Handler();
-    Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mSystemUiHider.hide();
+    private void playInstructions(final int i) {
+        if (i >= audioInstructions.length) {
+            return;
         }
-    };
-
-    /**
-     * Schedules a call to hide() in [delay] milliseconds, canceling any
-     * previously scheduled calls.
-     */
-    private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+        final MediaPlayer audio = MediaPlayer.create(this, audioInstructions[i]);
+        audio.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                audio.stop();
+                audio.release();
+                playInstructions(i+1);
+            }
+        });
+        audio.start();
     }
 }

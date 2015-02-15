@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="@color/background_floating_material_dark"
     tools:context="com.ss12.csun_mmg.peripheralmaze.JoinGameMenu"
-    android:id="@+id/connection_layout">
+    android:id="@+id/join_game_layout">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
