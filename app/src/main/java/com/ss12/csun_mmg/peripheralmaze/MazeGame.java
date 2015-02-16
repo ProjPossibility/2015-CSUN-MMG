@@ -26,16 +26,18 @@ public class MazeGame {
     }
 
     public void movePlayer(int direction) {
-        mPlayer.move(direction);
-        signal(GameEvent.EVENT_TYPE.PLAYER_MOVE, mPlayer);
-    }
-
-    public void lookPlayer(int direction) {
-        if (mPlayer.look(direction)) {
-            signal(GameEvent.EVENT_TYPE.PLAYER_LOOK, mPlayer);
+        if (mPlayer.move(direction)) {
+            signal(GameEvent.EVENT_TYPE.PLAYER_MOVE, mPlayer);
+            if (getPlayerTile().isEndTile()) {
+                signal(GameEvent.EVENT_TYPE.PLAYER_WIN, mPlayer);
+            }
         } else {
             signal(GameEvent.EVENT_TYPE.PLAYER_COLLIDE, mPlayer);
         }
+    }
+
+    public void lookPlayer(int direction) {
+        signal(GameEvent.EVENT_TYPE.PLAYER_LOOK, mPlayer);
     }
 
     public Tile getPlayerTile() {

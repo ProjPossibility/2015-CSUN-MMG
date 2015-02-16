@@ -1,10 +1,12 @@
 package com.ss12.csun_mmg.peripheralmaze;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
@@ -65,6 +67,7 @@ public class Board extends Activity {
 
     Resources mResources;
     GestureDetectorCompat mDetector;
+    MediaPlayer ambientSound, activeSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,12 +243,15 @@ public class Board extends Activity {
                 // TODO update ambient audio
                 break;
             case PLAYER_MOVE:
+                // TODO play instant audio
+                playSound(this, R.raw.blip_no_wall);
                 // TODO update map buffer
                 // TODO update sprite
                 // TODO update ambient audio
                 break;
             case PLAYER_COLLIDE:
                 // TODO play instant audio (grunt or painful sound)
+                playSound(this, R.raw.blip_wall);
                 // TODO provide haptic feedback
                 break;
         }
@@ -255,5 +261,16 @@ public class Board extends Activity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return this.mDetector.onTouchEvent(event);
+    }
+
+    private void playSound(Context context, int rid) {
+        final MediaPlayer audio = MediaPlayer.create(context, rid);
+        audio.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                audio.release();
+            }
+        });
+        audio.start();
     }
 }
