@@ -6,7 +6,10 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -61,6 +64,7 @@ public class Board extends Activity {
     ImageView mMapSprite;
 
     Resources mResources;
+    GestureDetectorCompat mDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,42 @@ public class Board extends Activity {
         final View contentView = findViewById(R.id.maze_game_layout);
 
         mMapSprite = (ImageView)findViewById(R.id.map_sprite);
+
+        mDetector = new GestureDetectorCompat(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                float dx = e2.getX() - e1.getX();
+                float dy = e2.getY() - e1.getY();
+                dx = dx==0 ? 1 : dx;
+                dy = dy==0 ? 1 : dy;
+
+                if (Math.abs(dy) >= Math.abs(dx)) {
+                    // up/down
+                    if (dy <= 0) {
+                        // up
+                        mMazeGame.movePlayer(Tile.NORTH);
+                        Log.v("Board", "Playing moving NORTH");
+                    } else {
+                        // down
+                        mMazeGame.movePlayer(Tile.SOUTH);
+                        Log.v("Board", "Playing moving SOUTH");
+                    }
+                } else {
+                    // left/right
+                    if (dx <= 0) {
+                        // left
+                        mMazeGame.movePlayer(Tile.WEST);
+                        Log.v("Board", "Playing moving WEST");
+                    } else {
+                        // right
+                        mMazeGame.movePlayer(Tile.EAST);
+                        Log.v("Board", "Playing moving EAST");
+                    }
+                }
+
+                return super.onFling(e1, e2, velocityX, velocityY);
+            }
+        });
 
         numBoards = mResources.getInteger(R.integer.numBoards);
         numRows = mResources.getInteger(R.integer.numRows);
@@ -173,6 +213,7 @@ public class Board extends Activity {
         }
 
         int[] spriteIds = tile.getSpriteIds();
+        Log.v("Board.Sprites", "Should only draw "+spriteIds.length+" sprites");
         Drawable[] drawables = new Drawable[spriteIds.length];
 
         for (int i=0; i<drawables.length; i++) {
@@ -181,7 +222,6 @@ public class Board extends Activity {
         LayerDrawable layerDrawable = new LayerDrawable(drawables);
         mMapSprite.setImageDrawable(layerDrawable);
 
-        mMapSprite.setImageDrawable(getResources().getDrawable(R.drawable.map_sprite));
         mMapSprite.invalidate();
     }
 
@@ -210,5 +250,10 @@ public class Board extends Activity {
                 break;
         }
         updateUI();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return this.mDetector.onTouchEvent(event);
     }
 }
