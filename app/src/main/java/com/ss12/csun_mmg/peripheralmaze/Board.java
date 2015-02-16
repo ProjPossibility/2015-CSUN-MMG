@@ -1,13 +1,13 @@
 package com.ss12.csun_mmg.peripheralmaze;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -68,6 +68,7 @@ public class Board extends Activity {
     Resources mResources;
     GestureDetectorCompat mDetector;
     MediaPlayer ambientSound, activeSound;
+    Vibrator mVibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,8 @@ public class Board extends Activity {
         final View contentView = findViewById(R.id.maze_game_layout);
 
         mMapSprite = (ImageView)findViewById(R.id.map_sprite);
+
+        mVibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
 
         mDetector = new GestureDetectorCompat(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -234,24 +237,27 @@ public class Board extends Activity {
             case GAME_START:
                 // TODO update UI
                 break;
-            case PLAYER_WIN:
             case PLAYER_LOSE:
+                mVibrator.vibrate(new long[]{0,100,50,150},-1);
+            case PLAYER_WIN:
+                mVibrator.vibrate(500);
                 // TODO post end game status to ReviewMenu activity
+                finishGame();
                 break;
             case PLAYER_LOOK:
-                // TODO update sprite (orientation)
                 // TODO update ambient audio
+                mVibrator.vibrate(25);
                 break;
             case PLAYER_MOVE:
                 // TODO play instant audio
-                playSound(this, R.raw.blip_no_wall);
-                // TODO update map buffer
-                // TODO update sprite
+                playSound(R.raw.blip_no_wall);
+                mVibrator.vibrate(25);
                 // TODO update ambient audio
                 break;
             case PLAYER_COLLIDE:
                 // TODO play instant audio (grunt or painful sound)
-                playSound(this, R.raw.blip_wall);
+                playSound(R.raw.blip_wall);
+                mVibrator.vibrate(100);
                 // TODO provide haptic feedback
                 break;
         }
@@ -263,8 +269,8 @@ public class Board extends Activity {
         return this.mDetector.onTouchEvent(event);
     }
 
-    private void playSound(Context context, int rid) {
-        final MediaPlayer audio = MediaPlayer.create(context, rid);
+    private void playSound(int rid) {
+        final MediaPlayer audio = MediaPlayer.create(this, rid);
         audio.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -272,5 +278,9 @@ public class Board extends Activity {
             }
         });
         audio.start();
+    }
+
+    private void finishGame() {
+
     }
 }

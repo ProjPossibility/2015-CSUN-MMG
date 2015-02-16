@@ -49,11 +49,8 @@ public class GameModeMenu extends Activity {
     private SystemUiHider mSystemUiHider;
 
     GestureDetectorCompat mDetector;
-    int[] audioInstructions = new int[] {R.raw.mode_vocals_audio, R.raw.mode_vocals_visual, R.raw.mode_vocals_default, R.raw.mode_vocals_repeat};
-    boolean playingInstructions=false;
     MediaPlayer mpAudio;
     MediaPlayer mpVisual;
-    MediaPlayer mpDefault;
     MediaPlayer mpRepeat;
     MediaPlayer[] audios;
 
@@ -99,10 +96,6 @@ public class GameModeMenu extends Activity {
                         Log.i(GameModeMenu.class.getName(), "Setting game mode: " + GameMode.MODE.VISUAL_MODE);
                         GameMode.setMode(GameMode.MODE.VISUAL_MODE);
                     }
-                } else {
-                    // swiped left or right
-                    Log.i(GameModeMenu.class.getName(), "Setting game mode: " + GameMode.MODE.DEFAULT_MODE);
-                    GameMode.setMode(GameMode.MODE.DEFAULT_MODE);
                 }
 
                 // TODO go to main menu screen
@@ -120,9 +113,8 @@ public class GameModeMenu extends Activity {
 
         mpAudio = MediaPlayer.create(this, R.raw.mode_vocals_audio);
         mpVisual = MediaPlayer.create(this, R.raw.mode_vocals_visual);
-        mpDefault = MediaPlayer.create(this, R.raw.mode_vocals_default);
         mpRepeat = MediaPlayer.create(this, R.raw.mode_vocals_repeat);
-        audios = new MediaPlayer[]{mpAudio,mpVisual,mpDefault,mpRepeat};
+        audios = new MediaPlayer[]{mpAudio,mpVisual,mpRepeat};
         mpAudio.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -130,12 +122,6 @@ public class GameModeMenu extends Activity {
             }
         });
         mpVisual.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mpDefault.start();
-            }
-        });
-        mpDefault.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 mpRepeat.start();
@@ -156,7 +142,6 @@ public class GameModeMenu extends Activity {
         stopInstructions();
         mpAudio.release();
         mpVisual.release();
-        mpDefault.release();
         mpRepeat.release();
     }
 

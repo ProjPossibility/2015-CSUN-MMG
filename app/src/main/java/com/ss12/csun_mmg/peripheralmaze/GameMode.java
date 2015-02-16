@@ -7,8 +7,7 @@ public class GameMode {
 
     public enum MODE {
         AUDIO_MODE,
-        VISUAL_MODE,
-        DEFAULT_MODE
+        VISUAL_MODE
     }
 
     private static MODE gameMode;
