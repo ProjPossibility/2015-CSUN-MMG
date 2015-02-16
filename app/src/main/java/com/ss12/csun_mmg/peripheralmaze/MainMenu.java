@@ -44,8 +44,6 @@ public class MainMenu extends Activity {
      */
     private SystemUiHider mSystemUiHider;
 
-    private DragButtonGroup wheel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +51,6 @@ public class MainMenu extends Activity {
         setContentView(R.layout.activity_main_menu);
 
         final View contentView = findViewById(R.id.main_layout);
-        wheel = (DragButtonGroup)findViewById(R.id.btn_main_menu_wheel);
 
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
@@ -91,7 +88,6 @@ public class MainMenu extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        wheel.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
 }

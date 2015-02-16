@@ -36,9 +36,4 @@
 
     </LinearLayout>
 
-    <com.ss12.csun_mmg.peripheralmaze.DragButtonGroup android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/btn_main_menu_wheel"
-        custom:children="@array/main_menu_controls" />
-
 </FrameLayout>
