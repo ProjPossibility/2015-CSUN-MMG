@@ -10,8 +10,8 @@
     </declare-styleable>
 
     <declare-styleable name="DragButtonGroup">
-        <attr name="button_labels" format="reference" />
         <attr name="font_size" format="integer" />
+        <attr name="children" format="reference" />
     </declare-styleable>
 
 </resources>

@@ -21,7 +21,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_host_game"
+            android:text="@string/str_host"
             android:id="@+id/btn_host_game"
             android:layout_gravity="left|center_vertical"
             android:onClick="gotoHostMenu" />
@@ -29,7 +29,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_join_game"
+            android:text="@string/str_join"
             android:id="@+id/btn_join_game"
             android:layout_gravity="center|right"
             android:onClick="gotoJoinMenu" />
@@ -39,6 +39,6 @@
     <com.ss12.csun_mmg.peripheralmaze.DragButtonGroup android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/btn_main_menu_wheel"
-        custom:button_labels="@array/main_menu_control_labels" />
+        custom:children="@array/main_menu_controls" />
 
 </FrameLayout>
